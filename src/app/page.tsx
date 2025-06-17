@@ -1,47 +1,29 @@
+'use client';
 import Image from "next/image";
-import {SearchIcon} from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {Button} from "@/components/ui/button";
-
+import {useFormState} from "react-dom";
+import {upload} from "@/lib/upload";
+import {CldVideoPlayer} from "next-cloudinary";
+// https://cloudinary.com/blog/upload-video-to-cloudinary-next-js-app-router
 export default function Home() {
+  const [url, formAction] = useFormState(upload, '')
   return (
     <div className="min-h-screen font-sans">
       {/* Main Content */}
       <main className="py-8 container mx-auto">
-
+          <h2 className="uppercase font-semibold">Admin Dashboard</h2>
         {/* Search, Filter, Sort */}
         <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
-          <div className="relative flex-grow">
-            <input
-              type="text"
-              placeholder="Хичээл хайх..."
-              className="border p-1.5 rounded-lg w-full pl-10"
-            />
-            <SearchIcon className="size-5 absolute top-2 left-2 text-gray-500 "/>
-          </div>
-          <Select>
-            <SelectTrigger className="w-[180px] h-10 ">
-              <SelectValue placeholder="Шүүх" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="flutter">Flutter</SelectItem>
-              <SelectItem value="az">A-Z</SelectItem>
-              <SelectItem value="za">Z-A</SelectItem>
-            </SelectContent>
-          </Select>
-
+          <h4 className="uppercase text-base font-semibold ">Upload a new video course</h4>
+          <form action={formAction}>
+            <input type="file" name="video" accept="video/*" />
+            <Button className="btn btn-md btn-white border border-indigo-600 text-indigo-600">Upload</Button>
+          </form>
         </div>
 
         {/* Categories */}
         <div className="flex gap-2 mb-8">
-          <Button className="border border-indigo-600 bg-white text-indigo-600 px-4 py-2 rounded-lg">Web Development</Button>
-          <Button className="border border-indigo-600 bg-white text-indigo-600 px-4 py-2 rounded-lg">Flutter</Button>
+          {url && <CldVideoPlayer src={url} width="869" height="470"/>}
         </div>
 
         {/* Product Grid */}
