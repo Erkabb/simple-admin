@@ -1,0 +1,31 @@
+mutation Login($input: LoginInput!) {
+    login(input: $input) {
+        user {
+            _id
+            email
+            password
+            firstname
+            lastname
+            role
+            phoneNumber
+            otp
+            newPassword
+            passwordResetToken
+            passwordResetTokenExpire
+            age
+            isCompany
+            companyName
+            companyRegister
+            pfp
+            birthDate
+            cookie
+            status
+            info
+            nickname
+            companyPhoneNumber
+            createdAt
+            updatedAt
+        }
+        token
+    }
+}
