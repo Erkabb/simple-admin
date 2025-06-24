@@ -1,14 +1,14 @@
 # YouTube Video Upload Component
 
-A React component that allows users to upload videos from YouTube to Cloudinary by simply providing a YouTube URL.
+A React component that allows users to upload videos from YouTube using GraphQL by simply providing a YouTube URL.
 
 ## Features
 
 - 📹 Extract video information from YouTube URLs
 - 🖼️ Display video thumbnails and metadata
-- ☁️ Upload videos directly to Cloudinary
+- 🔄 Upload videos via GraphQL mutations
 - 📋 Copy URLs to clipboard
-- 🎥 Play uploaded videos with Cloudinary video player
+- 🎥 Play uploaded videos with HTML5 video player
 - 📱 Responsive design with modern UI
 
 ## Components
@@ -18,58 +18,74 @@ Located at: `src/components/ui/youtube-upload.tsx`
 
 A comprehensive component that handles:
 - YouTube URL validation
-- Video information fetching
-- Cloudinary upload
+- Video information fetching via GraphQL
+- Video upload via GraphQL mutations
 - Video playback
 
-### API Routes
+### GraphQL Operations
 
-#### `/api/youtube-info`
-Fetches detailed video information from YouTube Data API.
+#### `GetYouTubeVideoInfo` Query
+Fetches detailed video information from YouTube.
 
-**Request:**
-```json
+**Variables:**
+```graphql
 {
   "youtubeUrl": "https://www.youtube.com/watch?v=VIDEO_ID"
 }
 ```
 
 **Response:**
-```json
+```graphql
 {
-  "success": true,
-  "videoInfo": {
-    "title": "Video Title",
-    "description": "Video description",
-    "thumbnail": "https://...",
-    "channelTitle": "Channel Name",
-    "publishedAt": "2023-01-01T00:00:00Z",
-    "duration": "PT4M13S",
-    "viewCount": "1000",
-    "likeCount": "100",
-    "videoId": "VIDEO_ID",
-    "youtubeUrl": "https://www.youtube.com/watch?v=VIDEO_ID"
+  "data": {
+    "getYouTubeVideoInfo": {
+      "success": true,
+      "videoInfo": {
+        "title": "Video Title",
+        "description": "Video description",
+        "thumbnail": "https://...",
+        "channelTitle": "Channel Name",
+        "publishedAt": "2023-01-01T00:00:00Z",
+        "duration": "PT4M13S",
+        "viewCount": "1000",
+        "likeCount": "100",
+        "videoId": "VIDEO_ID",
+        "youtubeUrl": "https://www.youtube.com/watch?v=VIDEO_ID"
+      },
+      "message": "Success"
+    }
   }
 }
 ```
 
-#### `/api/youtube-download`
-Downloads and uploads YouTube videos to Cloudinary.
+#### `UploadYouTubeVideo` Mutation
+Uploads YouTube videos via GraphQL.
 
-**Request:**
-```json
+**Variables:**
+```graphql
 {
-  "youtubeUrl": "https://www.youtube.com/watch?v=VIDEO_ID"
+  "input": {
+    "youtubeUrl": "https://www.youtube.com/watch?v=VIDEO_ID",
+    "videoId": "VIDEO_ID",
+    "title": "Video Title",
+    "description": "Video description",
+    "thumbnail": "https://...",
+    "channelTitle": "Channel Name"
+  }
 }
 ```
 
 **Response:**
-```json
+```graphql
 {
-  "success": true,
-  "videoInfo": { ... },
-  "cloudinaryUrl": "https://res.cloudinary.com/...",
-  "publicId": "youtube_VIDEO_ID"
+  "data": {
+    "uploadYouTubeVideo": {
+      "success": true,
+      "message": "Video uploaded successfully",
+      "videoUrl": "https://your-server.com/videos/VIDEO_ID.mp4",
+      "videoId": "VIDEO_ID"
+    }
+  }
 }
 ```
 
@@ -80,19 +96,17 @@ Downloads and uploads YouTube videos to Cloudinary.
 Add the following environment variables to your `.env.local` file:
 
 ```env
-# Cloudinary Configuration
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
-NEXT_PUBLIC_CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
 # YouTube Data API (Optional - for detailed video info)
 YOUTUBE_API_KEY=your_youtube_api_key
+
+# GraphQL Backend
+BACKEND_URI=https://your-graphql-server.com/graphql
 ```
 
 ### 2. Dependencies
 
-The component uses these dependencies (already included in the project):
-- `next-cloudinary` - Cloudinary integration
+The component uses these dependencies:
+- `@apollo/client` - GraphQL client
 - `react-toastify` - Toast notifications
 - `lucide-react` - Icons
 - `@radix-ui/react-*` - UI components
@@ -139,10 +153,10 @@ A demo page is available at `/youtube-upload` that showcases the component with:
 
 1. **URL Input**: User enters a YouTube URL
 2. **Validation**: Component validates the URL format and extracts video ID
-3. **Info Fetching**: Fetches video metadata from YouTube Data API (if available)
+3. **Info Fetching**: Fetches video metadata via GraphQL query
 4. **Display**: Shows video thumbnail and information
-5. **Upload**: Downloads video and uploads to Cloudinary
-6. **Playback**: Displays uploaded video with Cloudinary video player
+5. **Upload**: Processes video via GraphQL mutation
+6. **Playback**: Displays uploaded video with HTML5 video player
 
 ## Supported YouTube URL Formats
 
@@ -151,13 +165,62 @@ A demo page is available at `/youtube-upload` that showcases the component with:
 - `https://www.youtube.com/embed/VIDEO_ID`
 - `https://www.youtube.com/v/VIDEO_ID`
 
+## GraphQL Schema Requirements
+
+Your GraphQL backend should implement these types and operations:
+
+```graphql
+type YouTubeVideoInfo {
+  title: String!
+  description: String!
+  thumbnail: String!
+  channelTitle: String!
+  publishedAt: String!
+  duration: String!
+  viewCount: String!
+  likeCount: String!
+  videoId: String!
+  youtubeUrl: String!
+}
+
+type YouTubeVideoResponse {
+  success: Boolean!
+  videoInfo: YouTubeVideoInfo
+  message: String!
+}
+
+type UploadResponse {
+  success: Boolean!
+  message: String!
+  videoUrl: String!
+  videoId: String!
+}
+
+input YouTubeVideoInput {
+  youtubeUrl: String!
+  videoId: String!
+  title: String!
+  description: String!
+  thumbnail: String!
+  channelTitle: String!
+}
+
+type Query {
+  getYouTubeVideoInfo(youtubeUrl: String!): YouTubeVideoResponse!
+}
+
+type Mutation {
+  uploadYouTubeVideo(input: YouTubeVideoInput!): UploadResponse!
+}
+```
+
 ## Error Handling
 
 The component includes comprehensive error handling for:
 - Invalid YouTube URLs
+- GraphQL errors
 - Network errors
 - Upload failures
-- API rate limits
 
 ## Customization
 
@@ -177,7 +240,7 @@ You can extend the component by:
 ## Limitations
 
 - YouTube Data API requires an API key for detailed information
-- Cloudinary uploads are subject to file size limits
+- GraphQL backend must implement the required mutations and queries
 - Some videos may be restricted or unavailable
 - Processing time depends on video size and network conditions
 
@@ -191,13 +254,13 @@ You can extend the component by:
 
 2. **"Failed to fetch video information"**
    - Verify your YouTube API key is set correctly
-   - Check network connectivity
+   - Check GraphQL backend connectivity
    - Ensure the video is publicly accessible
 
 3. **"Upload failed" error**
-   - Verify Cloudinary credentials
-   - Check file size limits
-   - Ensure sufficient Cloudinary credits
+   - Verify GraphQL backend is running
+   - Check mutation implementation
+   - Ensure proper authentication
 
 ### Debug Mode
 

@@ -4,7 +4,7 @@ import { ApolloNextAppProvider, ApolloClient, InMemoryCache } from '@apollo/expe
 import {setContext} from "@apollo/client/link/context";
 import {PropsWithChildren} from "react";
 
-const uri = process.env.BACKEND_URI || "https://project-api-jade.vercel.app/";
+const uri = "http://localhost:3001/api/graphql";
 
 const makeClient = () => {
     const httpLink = new HttpLink({

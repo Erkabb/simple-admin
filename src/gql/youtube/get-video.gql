@@ -1,0 +1,15 @@
+query GetVideos {
+    getVideos {
+        _id
+        title
+        description
+        thumbnail
+        publishedAt
+        duration
+        viewCount
+        likeCount
+        videoId
+        youtubeUrl
+        channelTitle
+    }
+}

@@ -13,8 +13,8 @@ export default function YouTubeUploadPage() {
             YouTube Video Upload
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Upload videos from YouTube to your Cloudinary account. Simply paste a YouTube URL 
-            and the video will be downloaded and uploaded automatically.
+            Upload videos from YouTube using GraphQL. Simply paste a YouTube URL 
+            and the video will be processed and uploaded through your GraphQL backend.
           </p>
         </div>
         

@@ -13,6 +13,7 @@ export function LoginForm() {
     e.preventDefault();
     try {
       await login(email, password);
+      toast.success('Welcome to the admin');
       router.push('/');
     } catch {
       toast.error('Login failed');

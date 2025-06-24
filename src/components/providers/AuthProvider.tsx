@@ -2,6 +2,7 @@
 import {ReactNode, useContext, useEffect, useState} from 'react';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
+import { useLoginMutation } from '@/gql/auth/auth.generated';
 
 // import {useRouter} from "next/router";
 
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuth, setAuth] = useState(false);
 
     const client = useApolloClient();
+    const [loginMutation] = useLoginMutation();
     // const router = useRouter();
     // const pathname = usePathname();
 
@@ -39,17 +41,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await client.resetStore().then(() => toast.success(`Account logged out`));
     };
 
-    const login = async () => {
-        await client.resetStore().then(() => toast.success(`Welcome Back`));
-        setAuth(true);
+    const login = async (email: string, password: string) => {
+        const { data } = await loginMutation({
+            variables: {
+                input: { email, password }
+            }
+        });
+        if (data?.login?.token) {
+            localStorage.setItem('token', data.login.token);
+            setAuth(true);
+            await client.resetStore();
+            toast.success('Welcome Back');
+        } else {
+            throw new Error('Login failed');
+        }
     };
-    //
-    // const toLogin = () => {
-    //     localStorage.setItem('redirect', pathname);
-    //     router.push(`/auth/login`);
-    // };
-
-    return <AuthContext.Provider value={{ isAuth, login, logout,}}>{children}</AuthContext.Provider>;
+ 
+    return <AuthContext.Provider value={{ isAuth, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => useContext(AuthContext);

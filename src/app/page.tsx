@@ -1,56 +1,57 @@
 'use client';
-import React, { useState } from 'react';
-import { CldVideoPlayer } from 'next-cloudinary';
 
-export default function Home() {
-  const [videoUrl, setVideoUrl] = useState('');
+import { YouTubeUpload } from '@/components/ui/youtube-upload';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {useGetVideosQuery} from "@/gql/youtube/get-video.generated";
 
-  async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fileInput = e.currentTarget.video as HTMLInputElement;
-    const file = fileInput.files?.[0];
-    if (!file) return;
-
-    // 1. Get signature from your API
-    const sigRes = await fetch('/api/cloudinary-signature', { method: 'POST' });
-    const { timestamp, signature, apiKey, cloudName } = await sigRes.json();
-
-    // 2. Create FormData
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('api_key', apiKey);
-    formData.append('timestamp', timestamp);
-    formData.append('signature', signature);
-    formData.append('folder', 'videos');
-    formData.append('resource_type', 'video');
-
-    // 3. Upload to Cloudinary
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await res.json();
-    console.log('✅ Video uploaded:', data);
-    setVideoUrl(data.secure_url);
-  }
+export default function YouTubeUploadPage() {
+    const { data, loading } = useGetVideosQuery();
+    const videos = data?.getVideos;
 
   return (
-      <div className="p-4 h-screen">
-        <form onSubmit={handleUpload}>
-          <input type="file" name="video" accept="video/*" required />
-          <button type="submit">Upload Large Video</button>
-        </form>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto py-8">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              YouTube Video Upload
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Upload videos from YouTube using GraphQL. Simply paste a YouTube URL
+              and the video will be processed and uploaded through your GraphQL backend.
+            </p>
+          </div>
 
-        {videoUrl && (
-            <div className="mt-6">
-              <CldVideoPlayer
-                  src={videoUrl.split('/').pop()?.split('.')[0] ?? ''}
-                  width="800"
-                  height="450"
-              />
-            </div>
-        )}
+          <YouTubeUpload />
+            {videos?.map((v)=> {
+                const videoId = getYoutubeId(v.youtubeUrl);
+                if(!videoId) return null;
+                return(
+                    <>
+                        {loading && (<div className="skeleton w-72 h-10"/>)}
+                        <iframe src={`https://www.youtube.com/embed/${videoId}`} key={v._id} width="560" height="450" allowFullScreen frameBorder="0"/>
+                    </>
+                )
+            })}
+        </div>
+
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+        />
       </div>
   );
+}
+
+function getYoutubeId(url: string): string | null {
+    const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+    return match ? match[1] : null;
 }

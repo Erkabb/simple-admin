@@ -1,50 +1,84 @@
-import * as Types from '../graphql';
+import type * as Types from "../graphql";
 
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { gql } from "@apollo/client";
+import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type LoginMutationVariables = Types.Exact<{
   input: Types.LoginInput;
 }>;
 
-
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', token: string, user: { __typename?: 'User', _id: string, email: string, password: string, firstname?: string | null, lastname?: string | null, role?: string | null, phoneNumber?: string | null, otp?: string | null, newPassword?: string | null, passwordResetToken?: string | null, passwordResetTokenExpire?: string | null, age?: string | null, isCompany?: boolean | null, companyName?: string | null, companyRegister?: string | null, pfp?: string | null, birthDate?: string | null, cookie?: string | null, status?: string | null, info?: string | null, nickname?: string | null, companyPhoneNumber?: string | null, createdAt: any, updatedAt: any } } };
-
+export type LoginMutation = {
+  __typename?: "Mutation";
+  login: {
+    __typename?: "AuthResponse";
+    token: string;
+    user: {
+      __typename?: "User";
+      _id: string;
+      email: string;
+      password: string;
+      firstname?: string | null;
+      lastname?: string | null;
+      role?: string | null;
+      phoneNumber?: string | null;
+      otp?: string | null;
+      newPassword?: string | null;
+      passwordResetToken?: string | null;
+      passwordResetTokenExpire?: string | null;
+      age?: string | null;
+      isCompany?: boolean | null;
+      companyName?: string | null;
+      companyRegister?: string | null;
+      pfp?: string | null;
+      birthDate?: string | null;
+      cookie?: string | null;
+      status?: string | null;
+      info?: string | null;
+      nickname?: string | null;
+      companyPhoneNumber?: string | null;
+      createdAt: any;
+      updatedAt: any;
+    };
+  };
+};
 
 export const LoginDocument = gql`
-    mutation Login($input: LoginInput!) {
-  login(input: $input) {
-    user {
-      _id
-      email
-      password
-      firstname
-      lastname
-      role
-      phoneNumber
-      otp
-      newPassword
-      passwordResetToken
-      passwordResetTokenExpire
-      age
-      isCompany
-      companyName
-      companyRegister
-      pfp
-      birthDate
-      cookie
-      status
-      info
-      nickname
-      companyPhoneNumber
-      createdAt
-      updatedAt
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      user {
+        _id
+        email
+        password
+        firstname
+        lastname
+        role
+        phoneNumber
+        otp
+        newPassword
+        passwordResetToken
+        passwordResetTokenExpire
+        age
+        isCompany
+        companyName
+        companyRegister
+        pfp
+        birthDate
+        cookie
+        status
+        info
+        nickname
+        companyPhoneNumber
+        createdAt
+        updatedAt
+      }
+      token
     }
-    token
   }
-}
-    `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+`;
+export type LoginMutationFn = Apollo.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>;
 
 /**
  * __useLoginMutation__
@@ -63,10 +97,21 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   },
  * });
  */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
+export function useLoginMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    options,
+  );
+}
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>;
