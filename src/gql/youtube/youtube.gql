@@ -1,0 +1,19 @@
+mutation UploadVideo($input: VideoUploadInput!) {
+    uploadVideo(input: $input) {
+        video {
+            _id
+            title
+            description
+            thumbnail
+            publishedAt
+            duration
+            viewCount
+            likeCount
+            videoId
+            youtubeUrl
+            channelTitle
+        }
+        message
+        success
+    }
+}
