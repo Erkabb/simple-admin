@@ -24,7 +24,7 @@ export default function YouTubeUploadPage() {
           </div>
 
           <YouTubeUpload />
-            <div className="container mx-auto p-5 flex gap-5">
+            <div className="container mx-auto p-5 flex gap-5 overflow-x-auto shrink-0">
                 {videos?.map((v)=> {
                 const videoId = getYoutubeId(v.youtubeUrl);
                 if(!videoId) return null;

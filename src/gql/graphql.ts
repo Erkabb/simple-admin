@@ -28,6 +28,14 @@ export type Scalars = {
   Date: { input: any; output: any };
 };
 
+export type AddUserInput = {
+  email: Scalars["String"]["input"];
+  firstname: Scalars["String"]["input"];
+  lastname?: InputMaybe<Scalars["String"]["input"]>;
+  password: Scalars["String"]["input"];
+  phoneNumber: Scalars["String"]["input"];
+};
+
 export type BrandInput = {
   brandLogo: Scalars["String"]["input"];
   name: Scalars["String"]["input"];

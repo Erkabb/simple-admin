@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import {useSignUpMutation} from "@/gql/auth/auth.generated";
 import {toast} from "sonner";
+import {useRouter} from "next/navigation";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ firstname: "", lastname: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
+const router = useRouter();
   const [signUpMutation] = useSignUpMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +50,7 @@ export default function RegisterPage() {
         }
       })
       toast.success("Successfully registered.");
+      router.push("/");
 
     } catch (err) {
       console.error(err);

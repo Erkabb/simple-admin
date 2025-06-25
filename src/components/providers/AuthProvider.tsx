@@ -1,4 +1,5 @@
 'use client';
+
 import {ReactNode, useContext, useEffect, useState} from 'react';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
@@ -16,9 +17,6 @@ export interface AuthContextValue {
 }
 
 export const AuthContext = createContext<AuthContextValue>({} as AuthContextValue);
-
-export const AuthConsumer = AuthContext.Consumer;
-
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     // const client = useApolloClient();
