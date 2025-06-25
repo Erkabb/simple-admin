@@ -29,3 +29,32 @@ mutation Login($input: LoginInput!) {
         token
     }
 }
+
+mutation SignUp($input: SignUpInput!) {
+    signUp(input: $input) {
+        _id
+        email
+        password
+        firstname
+        lastname
+        role
+        phoneNumber
+        otp
+        newPassword
+        passwordResetToken
+        passwordResetTokenExpire
+        age
+        isCompany
+        companyName
+        companyRegister
+        pfp
+        birthDate
+        cookie
+        status
+        info
+        nickname
+        companyPhoneNumber
+        createdAt
+        updatedAt
+    }
+}

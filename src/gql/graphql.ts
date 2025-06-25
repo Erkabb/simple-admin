@@ -122,6 +122,7 @@ export type SubPropertyInput = {
 };
 
 export type VideoUploadInput = {
+  description?: InputMaybe<Scalars["String"]["input"]>;
   title: Scalars["String"]["input"];
   youtubeUrl: Scalars["String"]["input"];
 };
