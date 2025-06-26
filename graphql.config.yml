@@ -1,0 +1,6 @@
+schema: schema.graphql
+extensions:
+  endpoints:
+    local:
+      url: "https://project-api-jade.vercel.app/api/graphql"
+      introspect: false
