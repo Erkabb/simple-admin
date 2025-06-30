@@ -13,7 +13,7 @@ export type GetVideosQuery = {
     title: string;
     description?: string | null;
     thumbnail?: string | null;
-    publishedAt?: any | null;
+    publishedAt?: string | null;
     duration?: string | null;
     viewCount?: number | null;
     likeCount?: number | null;

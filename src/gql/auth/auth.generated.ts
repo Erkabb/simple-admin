@@ -36,8 +36,8 @@ export type LoginMutation = {
       info?: string | null;
       nickname?: string | null;
       companyPhoneNumber?: string | null;
-      createdAt: any;
-      updatedAt: any;
+      createdAt: string;
+      updatedAt: string;
     };
   };
 };
@@ -72,8 +72,8 @@ export type SignUpMutation = {
     info?: string | null;
     nickname?: string | null;
     companyPhoneNumber?: string | null;
-    createdAt: any;
-    updatedAt: any;
+    createdAt: string;
+    updatedAt: string;
   };
 };
 

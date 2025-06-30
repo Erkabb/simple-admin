@@ -12,6 +12,9 @@ const config: CodegenConfig = {
     useTypeImports: true,
     dedupeOperationSuffix: true,
     onlyOperationTypes: true,
+    scalars: {
+          Date: 'string',
+        },
   },
   generates: {
     'src/gql/graphql.ts': { plugins: ['typescript'] },

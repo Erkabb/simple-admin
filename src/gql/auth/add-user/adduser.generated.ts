@@ -33,8 +33,8 @@ export type AddUserMutation = {
     info?: string | null;
     nickname?: string | null;
     companyPhoneNumber?: string | null;
-    createdAt: any;
-    updatedAt: any;
+    createdAt: string;
+    updatedAt: string;
   };
 };
 
