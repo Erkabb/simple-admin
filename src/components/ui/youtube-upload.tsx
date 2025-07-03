@@ -7,16 +7,20 @@ import { Card, CardContent, CardHeader } from './card';
 import { toast } from 'react-toastify';
 import { Loader2, Youtube, Download, Copy, RefreshCw, AlertCircle } from 'lucide-react';
 import { useUploadVideoMutation } from "@/gql/youtube/youtube.generated";
+import {Schema} from "node:inspector";
 
 interface FormData {
-  youtubeUrl: string;
+  youtubeUrl: Schema.Types.Object;
   title: string;
   description: string;
   author: string;
 }
 
 interface FormErrors {
-  youtubeUrl?: string;
+  youtubeUrl?: {
+    name?: string;
+    url?: string;
+  };
   title?: string;
   description?: string;
   author?: string;
@@ -24,7 +28,10 @@ interface FormErrors {
 
 export function YouTubeUpload() {
   const [formData, setFormData] = useState<FormData>({
-    youtubeUrl: '',
+    youtubeUrl: {
+      name: '',
+      url: '',
+    },
     title: '',
     description: '',
     author: ''
@@ -52,11 +59,14 @@ export function YouTubeUpload() {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.youtubeUrl.trim()) {
-      newErrors.youtubeUrl = 'YouTube URL is required';
-    } else if (!extractYouTubeId(formData.youtubeUrl)) {
-      newErrors.youtubeUrl = 'Please enter a valid YouTube URL';
+    if (!formData.youtubeUrl?.url.trim()) {
+      if (!newErrors.youtubeUrl) newErrors.youtubeUrl = {};
+      newErrors.youtubeUrl.url = 'YouTube URL is required';
+    } else if (!extractYouTubeId(formData.youtubeUrl?.url)) {
+      if (!newErrors.youtubeUrl) newErrors.youtubeUrl = {};
+      newErrors.youtubeUrl.url = 'Please enter a valid YouTube URL';
     }
+
 
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
@@ -94,14 +104,18 @@ export function YouTubeUpload() {
       const { data } = await uploadVideoMutation({
         variables: {
           input: {
-            youtubeUrl: formData.youtubeUrl,
+            youtubeUrl: {
+              name: formData.youtubeUrl || '',
+              url: formData.youtubeUrl || '',
+            },
             title: formData.description,
           }
         }
       });
 
+      if(!data?.uploadVideo.video?.youtubeUrl.url) throw new Error('YouTube URL is required');
       if (data?.uploadVideo?.success && data.uploadVideo.video) {
-        setUploadedVideoUrl(data.uploadVideo.video.youtubeUrl);
+        setUploadedVideoUrl(data.uploadVideo.video.youtubeUrl.url);
         toast.success('Video processed and uploaded successfully!');
       } else {
         toast.error(data?.uploadVideo?.message || 'Failed to process video');
@@ -125,7 +139,10 @@ export function YouTubeUpload() {
 
   const resetForm = () => {
     setFormData({
-      youtubeUrl: '',
+      youtubeUrl: {
+        name: '',
+        url: '',
+      },
       title: '',
       description: '',
       author: ''
@@ -153,22 +170,22 @@ export function YouTubeUpload() {
         <CardContent className="space-y-6">
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">YouTube URL *</label>
-              <Input
-                type="url"
-                placeholder="https://www.youtube.com/watch?v=..."
-                value={formData.youtubeUrl}
-                onChange={(e) => handleInputChange('youtubeUrl', e.target.value)}
-                className={errors.youtubeUrl ? 'border-red-500' : ''}
-              />
-              {errors.youtubeUrl && (
-                <p className="text-sm text-red-500 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  {errors.youtubeUrl}
-                </p>
-              )}
-            </div>
+            {/*<div className="space-y-2">*/}
+            {/*  <label className="text-sm font-medium">YouTube URL *</label>*/}
+            {/*  <Input*/}
+            {/*    type="url"*/}
+            {/*    placeholder="https://www.youtube.com/watch?v=..."*/}
+            {/*    value={formData.youtubeUrl}*/}
+            {/*    onChange={(e) => handleInputChange('youtubeUrl', e.target.value)}*/}
+            {/*    className={errors.youtubeUrl ? 'border-red-500' : ''}*/}
+            {/*  />*/}
+            {/*  {errors.youtubeUrl && (*/}
+            {/*    <p className="text-sm text-red-500 flex items-center gap-1">*/}
+            {/*      <AlertCircle className="h-3 w-3" />*/}
+            {/*      {errors.youtubeUrl}*/}
+            {/*    </p>*/}
+            {/*  )}*/}
+            {/*</div>*/}
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Title *</label>
@@ -184,6 +201,38 @@ export function YouTubeUpload() {
                   <AlertCircle className="h-3 w-3" />
                   {errors.title}
                 </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Sub video name</label>
+              <Input
+                  type="text"
+                  placeholder="Enter subvideo's name"
+                  value={formData.youtubeUrl.name}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  className={errors.title ? 'border-red-500' : ''}
+              />
+              {errors.title && (
+                  <p className="text-sm text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.title}
+                  </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Sub videos url</label>
+              <Input
+                  type="text"
+                  placeholder="Enter subvideo url"
+                  value={formData.youtubeUrl.url}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  className={errors.title ? 'border-red-500' : ''}
+              />
+              {errors.title && (
+                  <p className="text-sm text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.title}
+                  </p>
               )}
             </div>
 

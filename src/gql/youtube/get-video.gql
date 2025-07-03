@@ -4,12 +4,14 @@ query GetVideos {
         title
         description
         thumbnail
-        publishedAt
-        duration
-        viewCount
-        likeCount
-        videoId
-        youtubeUrl
+        unitPrice
+        level
+        category
+        youtubeUrl {
+            id
+            name
+            url
+        }
         channelTitle
     }
 }

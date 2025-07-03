@@ -19,13 +19,16 @@ export type UploadVideoMutation = {
       title: string;
       description?: string | null;
       thumbnail?: string | null;
-      publishedAt?: string | null;
-      duration?: string | null;
-      viewCount?: number | null;
-      likeCount?: number | null;
-      videoId?: string | null;
-      youtubeUrl: string;
+      unitPrice?: number | null;
+      level: string;
+      category?: string | null;
       channelTitle?: string | null;
+      youtubeUrl: {
+        __typename?: "YoutubeUrlType";
+        id: string;
+        name?: string | null;
+        url?: string | null;
+      };
     } | null;
   };
 };
@@ -33,21 +36,23 @@ export type UploadVideoMutation = {
 export const UploadVideoDocument = gql`
   mutation UploadVideo($input: VideoUploadInput!) {
     uploadVideo(input: $input) {
+      message
+      success
       video {
         _id
         title
         description
         thumbnail
-        publishedAt
-        duration
-        viewCount
-        likeCount
-        videoId
-        youtubeUrl
+        unitPrice
+        level
+        category
+        youtubeUrl {
+          id
+          name
+          url
+        }
         channelTitle
       }
-      message
-      success
     }
   }
 `;

@@ -34,6 +34,7 @@ export type AddUserInput = {
   lastname?: InputMaybe<Scalars["String"]["input"]>;
   password: Scalars["String"]["input"];
   phoneNumber: Scalars["String"]["input"];
+  userLevel?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type BrandInput = {
@@ -130,7 +131,17 @@ export type SubPropertyInput = {
 };
 
 export type VideoUploadInput = {
+  category?: InputMaybe<Scalars["String"]["input"]>;
+  channelTitle?: InputMaybe<Scalars["String"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
+  level?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail?: InputMaybe<Scalars["String"]["input"]>;
   title: Scalars["String"]["input"];
-  youtubeUrl: Scalars["String"]["input"];
+  unitPrice?: InputMaybe<Scalars["Float"]["input"]>;
+  youtubeUrl: YoutubeUrlInput;
+};
+
+export type YoutubeUrlInput = {
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
 };

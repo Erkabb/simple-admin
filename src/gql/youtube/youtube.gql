@@ -1,19 +1,21 @@
 mutation UploadVideo($input: VideoUploadInput!) {
     uploadVideo(input: $input) {
+        message
+        success
         video {
             _id
             title
             description
             thumbnail
-            publishedAt
-            duration
-            viewCount
-            likeCount
-            videoId
-            youtubeUrl
+            unitPrice
+            level
+            category
+            youtubeUrl {
+                id
+                name
+                url
+            }
             channelTitle
         }
-        message
-        success
     }
 }
